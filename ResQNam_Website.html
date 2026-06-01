@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="ResQNam — Namibia's emergency response app. One tap connects you to police, ambulance, fire brigade and roadside assistance with live GPS tracking.">
+<meta name="keywords" content="ResQNam, Namibia emergency app, ambulance Namibia, police Namibia, emergency response">
+<meta property="og:title" content="ResQNam — Emergency Response Namibia">
+<meta property="og:description" content="One tap. Your location. Help on the way. Namibia's first GPS-powered emergency response platform.">
+<title>ResQNam — Emergency Response Namibia</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --red:#E63946;--red2:#FF4D5A;--red-glow:#E6394625;
+  --black:#080C10;--black2:#0C1118;--black3:#111820;
+  --dark:#141C26;--dark2:#1A2535;--dark3:#202F42;
+  --white:#F0F6FF;--off:#C8D8EA;--muted:#7A9BBE;
+  --sky:#4FC3F7;--success:#2ECC71;
+  --fw:clamp(1rem,2.5vw,1.1rem);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Outfit',sans-serif;background:var(--black);color:var(--white);overflow-x:hidden;cursor:default}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--black)}
+::-webkit-scrollbar-thumb{background:var(--red);border-radius:2px}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  padding:20px 40px;
+  display:flex;align-items:center;justify-content:space-between;
+  transition:all 0.4s;
+}
+nav.scrolled{background:rgba(8,12,16,0.95);backdrop-filter:blur(20px);padding:14px 40px;border-bottom:1px solid #ffffff08}
+.nav-logo{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:2px;display:flex;align-items:center;gap:8px}
+.nav-logo span{color:var(--red)}
+.nav-links{display:flex;align-items:center;gap:32px}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:0.88rem;font-weight:500;letter-spacing:0.5px;transition:color 0.2s}
+.nav-links a:hover{color:var(--white)}
+.nav-cta{background:var(--red);color:#fff;padding:10px 24px;border-radius:50px;font-size:0.85rem;font-weight:600;text-decoration:none;transition:all 0.2s;letter-spacing:0.5px}
+.nav-cta:hover{background:var(--red2);transform:translateY(-1px);box-shadow:0 8px 24px #E6394640}
+
+/* ── HERO ── */
+#hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;
+  padding:120px 24px 80px;
+  position:relative;overflow:hidden;
+}
+
+/* Background grid */
+#hero::before{
+  content:'';position:absolute;inset:0;
+  background-image:linear-gradient(#E6394606 1px,transparent 1px),linear-gradient(90deg,#E6394606 1px,transparent 1px);
+  background-size:80px 80px;
+  mask-image:radial-gradient(ellipse at center,black 30%,transparent 70%);
+}
+
+/* Glow orb */
+.hero-orb{
+  position:absolute;
+  width:700px;height:700px;
+  border-radius:50%;
+  background:radial-gradient(circle,#E6394618 0%,transparent 70%);
+  top:50%;left:50%;transform:translate(-50%,-50%);
+  animation:orb-breathe 6s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes orb-breathe{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:0.7}50%{transform:translate(-50%,-50%) scale(1.1);opacity:1}}
+
+.hero-badge{
+  position:relative;z-index:2;
+  background:#E6394612;border:1px solid #E6394635;
+  border-radius:50px;padding:8px 20px;
+  font-size:0.78rem;font-weight:600;color:var(--red);
+  letter-spacing:2px;text-transform:uppercase;
+  margin-bottom:32px;
+  display:inline-flex;align-items:center;gap:8px;
+  animation:fadeUp 0.8s ease both;
+}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:var(--red);animation:blink 1.5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+
+.hero-title{
+  position:relative;z-index:2;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(4rem,14vw,10rem);
+  line-height:0.9;
+  letter-spacing:4px;
+  margin-bottom:16px;
+  animation:fadeUp 0.8s ease 0.1s both;
+}
+.hero-title .line1{display:block;color:var(--white)}
+.hero-title .line2{display:block;color:var(--red);-webkit-text-stroke:2px var(--red);color:transparent}
+.hero-title .line3{display:block;color:var(--white);font-size:0.45em;letter-spacing:12px;margin-top:8px}
+
+.hero-sub{
+  position:relative;z-index:2;
+  font-size:clamp(1rem,2.5vw,1.25rem);
+  color:var(--off);font-weight:300;
+  max-width:560px;line-height:1.7;
+  margin-bottom:48px;
+  animation:fadeUp 0.8s ease 0.2s both;
+}
+.hero-sub strong{color:var(--white);font-weight:600}
+
+.hero-actions{
+  position:relative;z-index:2;
+  display:flex;gap:16px;flex-wrap:wrap;justify-content:center;
+  margin-bottom:80px;
+  animation:fadeUp 0.8s ease 0.3s both;
+}
+.btn-primary{
+  background:var(--red);color:#fff;
+  padding:16px 40px;border-radius:50px;
+  font-size:1rem;font-weight:700;text-decoration:none;
+  box-shadow:0 8px 32px #E6394650;
+  transition:all 0.25s;letter-spacing:0.5px;
+  display:inline-flex;align-items:center;gap:10px;
+}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 16px 48px #E6394660;background:var(--red2)}
+.btn-secondary{
+  background:transparent;color:var(--white);
+  padding:16px 40px;border-radius:50px;
+  font-size:1rem;font-weight:600;text-decoration:none;
+  border:1px solid #ffffff20;
+  transition:all 0.25s;letter-spacing:0.5px;
+}
+.btn-secondary:hover{border-color:#ffffff50;background:#ffffff08}
+
+/* Service pills */
+.hero-pills{
+  position:relative;z-index:2;
+  display:flex;gap:12px;flex-wrap:wrap;justify-content:center;
+  animation:fadeUp 0.8s ease 0.4s both;
+}
+.pill{
+  background:var(--dark);border:1px solid #ffffff10;
+  border-radius:50px;padding:10px 20px;
+  font-size:0.82rem;font-weight:500;color:var(--muted);
+  display:flex;align-items:center;gap:8px;
+  transition:all 0.2s;
+}
+.pill:hover{border-color:#ffffff25;color:var(--white)}
+
+/* Scroll indicator */
+.scroll-ind{
+  position:absolute;bottom:32px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  color:var(--muted);font-size:0.72rem;letter-spacing:2px;text-transform:uppercase;
+  animation:fadeUp 1s ease 0.8s both;
+}
+.scroll-line{width:1px;height:48px;background:linear-gradient(var(--red),transparent);animation:scroll-drop 2s ease-in-out infinite}
+@keyframes scroll-drop{0%,100%{transform:scaleY(1);opacity:1}50%{transform:scaleY(0.5);opacity:0.3}}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── PROBLEM SECTION ── */
+#problem{
+  padding:120px 24px;
+  max-width:1100px;margin:0 auto;
+}
+.section-tag{font-size:0.75rem;font-weight:700;color:var(--red);letter-spacing:3px;text-transform:uppercase;margin-bottom:16px}
+.section-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,6vw,5rem);line-height:1;letter-spacing:2px;margin-bottom:24px}
+.section-title span{color:var(--red)}
+
+.problem-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;margin-top:60px}
+.problem-story{font-size:1.05rem;color:var(--off);line-height:1.9}
+.problem-story p{margin-bottom:20px}
+.problem-story blockquote{
+  border-left:3px solid var(--red);
+  padding:16px 24px;
+  background:var(--dark);border-radius:0 12px 12px 0;
+  font-style:italic;color:var(--white);font-size:1rem;
+  margin:24px 0;line-height:1.7;
+}
+
+.problem-stats{display:flex;flex-direction:column;gap:16px}
+.stat-block{
+  background:var(--dark);border:1px solid #ffffff08;border-radius:20px;
+  padding:28px;position:relative;overflow:hidden;
+  transition:border-color 0.3s;
+}
+.stat-block:hover{border-color:#E6394630}
+.stat-block::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--red),transparent)}
+.stat-num{font-family:'Bebas Neue',sans-serif;font-size:3.5rem;color:var(--red);line-height:1;display:block;letter-spacing:1px}
+.stat-desc{color:var(--muted);font-size:0.88rem;margin-top:4px;line-height:1.5}
+
+/* ── HOW IT WORKS ── */
+#how{
+  padding:120px 24px;
+  background:var(--black2);
+  position:relative;overflow:hidden;
+}
+#how::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--red),transparent)}
+#how::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--red),transparent)}
+
+.how-inner{max-width:1100px;margin:0 auto}
+.how-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:64px;position:relative}
+.how-steps::before{
+  content:'';position:absolute;
+  top:48px;left:10%;right:10%;
+  height:1px;background:linear-gradient(90deg,transparent,#E6394640,#E6394640,transparent);
+}
+
+.how-step{text-align:center;position:relative}
+.step-num{
+  width:96px;height:96px;
+  border-radius:50%;
+  border:1px solid #E6394640;
+  background:var(--black);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 20px;
+  font-size:36px;
+  position:relative;z-index:2;
+  transition:all 0.3s;
+}
+.how-step:hover .step-num{border-color:var(--red);box-shadow:0 0 40px #E6394430;transform:translateY(-4px)}
+.step-label{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:1px;margin-bottom:8px;color:var(--white)}
+.step-desc{font-size:0.82rem;color:var(--muted);line-height:1.6}
+
+/* ── FEATURES ── */
+#features{padding:120px 24px;max-width:1100px;margin:0 auto}
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:64px}
+.feat-card{
+  background:var(--dark);border:1px solid #ffffff08;
+  border-radius:20px;padding:32px 28px;
+  transition:all 0.3s;position:relative;overflow:hidden;
+}
+.feat-card::after{content:'';position:absolute;inset:0;opacity:0;transition:opacity 0.3s;border-radius:20px}
+.feat-card:hover{border-color:#E6394625;transform:translateY(-4px)}
+.feat-card:hover::after{opacity:1;background:radial-gradient(circle at 50% 100%,#E6394608,transparent)}
+.feat-icon{font-size:2.2rem;margin-bottom:16px;display:block}
+.feat-title{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:1px;margin-bottom:10px;color:var(--white)}
+.feat-desc{font-size:0.85rem;color:var(--muted);line-height:1.7}
+
+/* ── SERVICES ── */
+#services{
+  padding:120px 24px;
+  background:var(--black2);
+  position:relative;
+}
+#services::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--red),transparent)}
+.services-inner{max-width:1100px;margin:0 auto}
+.services-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-top:64px}
+.service-card{
+  border-radius:24px;padding:40px 36px;
+  display:flex;align-items:flex-start;gap:24px;
+  position:relative;overflow:hidden;
+  transition:transform 0.3s;
+}
+.service-card:hover{transform:translateY(-4px)}
+.service-card.amb{background:linear-gradient(135deg,#E6394615,#E6394605);border:1px solid #E6394630}
+.service-card.pol{background:linear-gradient(135deg,#4FC3F715,#4FC3F705);border:1px solid #4FC3F730}
+.service-card.fire{background:linear-gradient(135deg,#F39C1215,#F39C1205);border:1px solid #F39C1230}
+.service-card.road{background:linear-gradient(135deg,#2ECC7115,#2ECC7105);border:1px solid #2ECC7130}
+.srv-icon{font-size:3rem;flex-shrink:0;line-height:1}
+.srv-body{}
+.srv-title{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:1px;margin-bottom:8px}
+.service-card.amb .srv-title{color:#FF6B75}
+.service-card.pol .srv-title{color:#4FC3F7}
+.service-card.fire .srv-title{color:#F39C12}
+.service-card.road .srv-title{color:#2ECC71}
+.srv-desc{font-size:0.88rem;color:var(--muted);line-height:1.7}
+
+/* ── ABOUT / FOUNDER ── */
+#about{padding:120px 24px;max-width:900px;margin:0 auto;text-align:center}
+.founder-quote{
+  font-size:clamp(1.2rem,3vw,1.7rem);
+  font-weight:300;color:var(--off);
+  line-height:1.8;margin:40px 0;
+  position:relative;padding:0 40px;
+}
+.founder-quote::before,.founder-quote::after{
+  content:'"';font-family:'Bebas Neue',sans-serif;
+  font-size:6rem;color:var(--red);opacity:0.3;
+  position:absolute;line-height:1;
+}
+.founder-quote::before{top:-20px;left:0}
+.founder-quote::after{content:'"';bottom:-60px;right:0}
+.founder-name{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:3px;color:var(--muted);margin-top:32px}
+
+/* ── COMING SOON / CTA ── */
+#cta{
+  padding:120px 24px;
+  text-align:center;
+  position:relative;overflow:hidden;
+}
+.cta-orb{
+  position:absolute;width:600px;height:600px;
+  border-radius:50%;
+  background:radial-gradient(circle,#E6394615 0%,transparent 70%);
+  top:50%;left:50%;transform:translate(-50%,-50%);
+  pointer-events:none;
+}
+.cta-inner{position:relative;z-index:2;max-width:700px;margin:0 auto}
+.cta-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(3rem,8vw,6rem);letter-spacing:3px;line-height:1;margin-bottom:24px}
+.cta-title span{color:var(--red)}
+.cta-sub{font-size:1.05rem;color:var(--off);line-height:1.7;margin-bottom:48px;font-weight:300}
+
+.notify-form{display:flex;gap:12px;max-width:480px;margin:0 auto 40px}
+.notify-input{
+  flex:1;background:var(--dark);border:1px solid #ffffff15;
+  border-radius:50px;padding:14px 24px;
+  color:var(--white);font-size:0.95rem;font-family:'Outfit',sans-serif;
+  outline:none;transition:border-color 0.2s;
+}
+.notify-input:focus{border-color:#E6394650}
+.notify-input::placeholder{color:var(--muted)}
+.notify-btn{
+  background:var(--red);color:#fff;border:none;
+  padding:14px 28px;border-radius:50px;
+  font-size:0.9rem;font-weight:700;font-family:'Outfit',sans-serif;
+  cursor:pointer;white-space:nowrap;transition:all 0.2s;
+}
+.notify-btn:hover{background:var(--red2);transform:translateY(-2px)}
+
+.notify-success{display:none;color:var(--success);font-size:0.9rem;margin-top:12px}
+
+.status-chips{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.s-chip{
+  background:var(--dark);border:1px solid #ffffff10;
+  border-radius:50px;padding:8px 16px;
+  font-size:0.78rem;color:var(--muted);
+  display:flex;align-items:center;gap:6px;
+}
+.s-chip .dot{width:6px;height:6px;border-radius:50%}
+.dot-green{background:var(--success)}
+.dot-yellow{background:var(--red)}
+.dot-red{background:#888}
+
+/* ── FOOTER ── */
+footer{
+  background:var(--black2);
+  border-top:1px solid #ffffff08;
+  padding:48px 40px 32px;
+}
+.footer-inner{max-width:1100px;margin:0 auto}
+.footer-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:40px;flex-wrap:wrap;gap:32px}
+.footer-brand .logo{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:2px;margin-bottom:8px}
+.footer-brand .logo span{color:var(--red)}
+.footer-brand p{font-size:0.85rem;color:var(--muted);max-width:240px;line-height:1.6}
+.footer-links h5{font-size:0.75rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
+.footer-links a{display:block;color:var(--off);font-size:0.85rem;text-decoration:none;margin-bottom:10px;transition:color 0.2s}
+.footer-links a:hover{color:var(--white)}
+.footer-bottom{border-top:1px solid #ffffff08;padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.footer-bottom p{font-size:0.78rem;color:var(--muted)}
+.footer-flag{font-size:0.78rem;color:var(--muted);display:flex;align-items:center;gap:6px}
+
+/* ── MOBILE RESPONSIVE ── */
+@media(max-width:768px){
+  nav{padding:16px 20px}
+  nav.scrolled{padding:12px 20px}
+  .nav-links{display:none}
+  .problem-grid{grid-template-columns:1fr}
+  .how-steps{grid-template-columns:repeat(2,1fr)}
+  .how-steps::before{display:none}
+  .features-grid{grid-template-columns:1fr}
+  .services-grid{grid-template-columns:1fr}
+  #problem,#features,#about,#cta{padding:80px 20px}
+  #how,#services{padding:80px 20px}
+  .notify-form{flex-direction:column}
+  .footer-top{flex-direction:column}
+  .footer-bottom{flex-direction:column;text-align:center}
+}
+@media(max-width:480px){
+  .hero-actions{flex-direction:column;align-items:center}
+  .btn-primary,.btn-secondary{width:100%;text-align:center;justify-content:center}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <div class="nav-logo">ResQ<span>Nam</span></div>
+  <div class="nav-links">
+    <a href="#problem">The Problem</a>
+    <a href="#how">How It Works</a>
+    <a href="#features">Features</a>
+    <a href="#services">Services</a>
+    <a href="#about">About</a>
+  </div>
+  <a href="#cta" class="nav-cta">Get Notified</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-orb"></div>
+  <div class="hero-badge"><div class="badge-dot"></div> Coming to Namibia · 2026</div>
+  <h1 class="hero-title">
+    <span class="line1">ResQ</span>
+    <span class="line2">Nam</span>
+    <span class="line3">Emergency Response Platform</span>
+  </h1>
+  <p class="hero-sub">
+    <strong>One tap. Your GPS location. Help on the way.</strong><br>
+    Namibia's first digital emergency response platform connecting citizens directly to Police, Ambulance, Fire Brigade and Roadside Assistance — with live tracking.
+  </p>
+  <div class="hero-actions">
+    <a href="#cta" class="btn-primary">🔔 Get Notified at Launch</a>
+    <a href="#how" class="btn-secondary">See How It Works</a>
+  </div>
+  <div class="hero-pills">
+    <div class="pill">🚑 Ambulance</div>
+    <div class="pill">🚔 Police</div>
+    <div class="pill">🚒 Fire Brigade</div>
+    <div class="pill">🔧 Roadside Assist</div>
+    <div class="pill">📍 Live GPS Tracking</div>
+    <div class="pill">🇳🇦 Nationwide</div>
+  </div>
+  <div class="scroll-ind">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section id="problem">
+  <div class="section-tag">The Problem</div>
+  <h2 class="section-title">Every Minute <span>Costs Lives</span></h2>
+  <div class="problem-grid">
+    <div class="problem-story">
+      <p>On an ordinary day in Walvis Bay, an ambulance crew stopped outside a home — asking a passerby for directions to a patient's address. The passerby didn't know the street either.</p>
+      <blockquote>"By the time the ambulance found the house, the patient had passed away. Those lost minutes were the difference between life and death."</blockquote>
+      <p>This is not an isolated story. Across Namibia, emergency responders navigate by verbal directions from distressed callers. Informal settlements, unmarked streets, and new developments mean responders can spend critical minutes simply trying to locate people who need help.</p>
+      <p>This problem is completely solvable with technology that already exists in every smartphone. <strong>ResQNam is that solution — built for Namibia, by a Namibian.</strong></p>
+    </div>
+    <div class="problem-stats">
+      <div class="stat-block">
+        <span class="stat-num">∞</span>
+        <div class="stat-desc">Minutes lost every day across Namibia due to manual navigation by emergency responders without GPS dispatch</div>
+      </div>
+      <div class="stat-block">
+        <span class="stat-num">0</span>
+        <div class="stat-desc">Existing GPS-powered emergency dispatch platforms serving the Namibian public today — ResQNam will be the first</div>
+      </div>
+      <div class="stat-block">
+        <span class="stat-num">3M+</span>
+        <div class="stat-desc">Namibians who will benefit from faster, location-accurate emergency response once ResQNam launches nationwide</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="how-inner">
+    <div class="section-tag">How It Works</div>
+    <h2 class="section-title">Four Steps.<br><span>One Life Saved.</span></h2>
+    <div class="how-steps">
+      <div class="how-step">
+        <div class="step-num">🚨</div>
+        <div class="step-label">1. Tap</div>
+        <div class="step-desc">Open ResQNam and tap the emergency service you need. One button. No forms. No waiting.</div>
+      </div>
+      <div class="how-step">
+        <div class="step-num">📍</div>
+        <div class="step-label">2. Located</div>
+        <div class="step-desc">Your exact GPS coordinates are captured instantly and transmitted to the nearest dispatch centre.</div>
+      </div>
+      <div class="how-step">
+        <div class="step-num">🗺</div>
+        <div class="step-label">3. Dispatched</div>
+        <div class="step-desc">The nearest available unit is assigned. They navigate directly to your GPS pin — no directions needed.</div>
+      </div>
+      <div class="how-step">
+        <div class="step-num">✅</div>
+        <div class="step-label">4. Tracked</div>
+        <div class="step-desc">Watch the responder moving toward you on a live map. Know exactly when help arrives.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="section-tag">Platform Features</div>
+  <h2 class="section-title">Built For <span>Real Emergencies</span></h2>
+  <div class="features-grid">
+    <div class="feat-card">
+      <span class="feat-icon">⚡</span>
+      <div class="feat-title">One-Tap Request</div>
+      <div class="feat-desc">Emergency requests dispatched in seconds. No multi-step forms. No long calls. Just one tap when it matters most.</div>
+    </div>
+    <div class="feat-card">
+      <span class="feat-icon">📍</span>
+      <div class="feat-title">Automatic GPS</div>
+      <div class="feat-desc">Your exact location is captured and transmitted automatically. No need to describe where you are or give verbal directions.</div>
+    </div>
+    <div class="feat-card">
+      <span class="feat-icon">🗺</span>
+      <div class="feat-title">Live Tracking</div>
+      <div class="feat-desc">Watch your responder moving toward you on a real-time map. Know their ETA and feel less alone in a crisis.</div>
+    </div>
+    <div class="feat-card">
+      <span class="feat-icon">📊</span>
+      <div class="feat-title">Dispatch Dashboard</div>
+      <div class="feat-desc">Emergency services operators manage all incoming requests, assign units and monitor active incidents from a professional web dashboard.</div>
+    </div>
+    <div class="feat-card">
+      <span class="feat-icon">📵</span>
+      <div class="feat-title">Offline SOS Fallback</div>
+      <div class="feat-desc">No data signal? ResQNam automatically sends an SMS with your last GPS coordinates so help can still find you.</div>
+    </div>
+    <div class="feat-card">
+      <span class="feat-icon">🌍</span>
+      <div class="feat-title">English & Afrikaans</div>
+      <div class="feat-desc">Launching with full English and Afrikaans language support. Additional Namibian languages will be added after launch.</div>
+    </div>
+    <div class="feat-card">
+      <span class="feat-icon">📋</span>
+      <div class="feat-title">Incident History</div>
+      <div class="feat-desc">Every emergency is digitally logged with timestamps, GPS data and outcome records — for citizens and emergency services alike.</div>
+    </div>
+    <div class="feat-card">
+      <span class="feat-icon">🔒</span>
+      <div class="feat-title">Secure & Private</div>
+      <div class="feat-desc">Your data is encrypted and protected. Location is only shared during an active emergency request — never at any other time.</div>
+    </div>
+    <div class="feat-card">
+      <span class="feat-icon">🇳🇦</span>
+      <div class="feat-title">Built For Namibia</div>
+      <div class="feat-desc">Designed specifically for Namibian roads, communities and emergency services. Not a foreign app adapted for Namibia — built here, for here.</div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="services-inner">
+    <div class="section-tag">Emergency Services</div>
+    <h2 class="section-title">Every Emergency. <span>One App.</span></h2>
+    <div class="services-grid">
+      <div class="service-card amb">
+        <div class="srv-icon">🚑</div>
+        <div class="srv-body">
+          <div class="srv-title">Ambulance</div>
+          <div class="srv-desc">Medical emergencies, injuries, illness, accidents. Connects directly to the nearest available ambulance unit with your exact GPS location transmitted instantly.</div>
+        </div>
+      </div>
+      <div class="service-card pol">
+        <div class="srv-icon">🚔</div>
+        <div class="srv-body">
+          <div class="srv-title">Police</div>
+          <div class="srv-desc">Crime in progress, threats, security emergencies, domestic incidents. NamPol officers dispatched with your pinned location — no verbal directions needed.</div>
+        </div>
+      </div>
+      <div class="service-card fire">
+        <div class="srv-icon">🚒</div>
+        <div class="srv-body">
+          <div class="srv-title">Fire Brigade</div>
+          <div class="srv-desc">Fires, gas leaks, structural collapse, hazardous situations. The fire brigade reaches you faster because they navigate directly to your GPS coordinates.</div>
+        </div>
+      </div>
+      <div class="service-card road">
+        <div class="srv-icon">🔧</div>
+        <div class="srv-body">
+          <div class="srv-title">Roadside Assistance</div>
+          <div class="srv-desc">Vehicle breakdowns, flat tyres, accidents on highways and remote roads. Even on the B2 or C14 — ResQNam pinpoints your location so help finds you.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-tag">Our Story</div>
+  <h2 class="section-title">Born From a <span>Real Loss</span></h2>
+  <div class="founder-quote">
+    I was standing outside my home in Walvis Bay when an ambulance stopped and asked me for directions to a house nearby. I didn't know the address. They drove on, searching. The patient passed away before they arrived. That day I decided to build something that makes sure it never happens again.
+  </div>
+  <div class="founder-name">— Timoteus Nandjila · Founder, ResQNam · Walvis Bay, Namibia</div>
+  <p style="margin-top:40px;color:var(--muted);font-size:0.95rem;line-height:1.8;max-width:600px;margin-left:auto;margin-right:auto">ResQNam is a proudly Namibian project. It is funded through the Social Security Commission Development Fund and supported by emergency services across Namibia. Our mission is simple — no Namibian should die because help couldn't find them.</p>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="cta-orb"></div>
+  <div class="cta-inner">
+    <div class="section-tag">Coming 2026</div>
+    <h2 class="cta-title">Be First.<br><span>Save Lives.</span></h2>
+    <p class="cta-sub">ResQNam launches in Walvis Bay first, then nationwide across Namibia. Enter your number below to be notified the moment it is available in your area.</p>
+    <div class="notify-form">
+      <input class="notify-input" type="tel" placeholder="Your Namibian mobile number" id="notifyInput">
+      <button class="notify-btn" onclick="submitNotify()">Notify Me</button>
+    </div>
+    <div class="notify-success" id="notifySuccess">✅ You're on the list! We'll notify you at launch.</div>
+    <div class="status-chips">
+      <div class="s-chip"><div class="dot dot-green"></div> Funding Application — In Progress</div>
+      <div class="s-chip"><div class="dot dot-yellow"></div> App Development — Planned</div>
+      <div class="s-chip"><div class="dot dot-red"></div> Walvis Bay Pilot — Coming Q1 2027</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="logo">ResQ<span>Nam</span></div>
+        <p>Namibia's first GPS-powered emergency response platform. Built in Walvis Bay. Built for every Namibian.</p>
+      </div>
+      <div class="footer-links">
+        <h5>Platform</h5>
+        <a href="#how">How It Works</a>
+        <a href="#features">Features</a>
+        <a href="#services">Services</a>
+      </div>
+      <div class="footer-links">
+        <h5>Project</h5>
+        <a href="#about">Our Story</a>
+        <a href="#cta">Get Notified</a>
+        <a href="mailto:resqnam@gmail.com">Contact Us</a>
+      </div>
+      <div class="footer-links">
+        <h5>Emergency Services</h5>
+        <a href="#">For Ambulance Services</a>
+        <a href="#">For NamPol</a>
+        <a href="#">For Fire Brigade</a>
+        <a href="#">For Roadside Operators</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 ResQNam · Direct Movement Investment Cc · Walvis Bay, Namibia</p>
+      <div class="footer-flag">🇳🇦 Proudly Namibian · Built to Save Lives</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Nav scroll effect
+window.addEventListener('scroll',()=>{
+  document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>60);
+});
+
+// Notify form
+function submitNotify(){
+  const v=document.getElementById('notifyInput').value.trim();
+  if(v.length<8){
+    document.getElementById('notifyInput').style.borderColor='var(--red)';
+    return;
+  }
+  document.getElementById('notifyInput').style.borderColor='var(--success)';
+  document.querySelector('.notify-btn').style.background='var(--success)';
+  document.querySelector('.notify-btn').textContent='✓ Done';
+  document.getElementById('notifySuccess').style.display='block';
+}
+
+// Scroll reveal
+const observer=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.style.opacity='1';
+      e.target.style.transform='translateY(0)';
+    }
+  });
+},{threshold:0.1});
+
+document.querySelectorAll('.feat-card,.stat-block,.service-card,.how-step,.step-num').forEach(el=>{
+  el.style.opacity='0';
+  el.style.transform='translateY(24px)';
+  el.style.transition='opacity 0.6s ease, transform 0.6s ease';
+  observer.observe(el);
+});
+</script>
+</body>
+</html>
